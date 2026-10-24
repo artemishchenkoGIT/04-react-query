@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SearchBar from '../SearchBar/SearchBar';
 import styles from './App.module.css';
 import type { Movie } from '../../types/movie';
@@ -28,22 +28,21 @@ function App() {
 
   const { data, isLoading, isError, isSuccess } = useQuery({
     queryKey: ['articles', query, page],
-    queryFn: async () => {
-      const data = await fetchMovies(query, page);
-
-      if (data.results.length === 0) {
-        toast.error('No movies found for your request.');
-      }
-
-      return data;
-    },
+    queryFn: () => fetchMovies(query, page),
     enabled: query !== '',
     placeholderData: keepPreviousData,
   });
 
+  useEffect(() => {
+    if (isSuccess && data?.results.length === 0) {
+      toast.error('No movies found for your request.');
+    }
+  }, [isSuccess, data]);
+
   const totalPages = data?.total_pages ?? 0;
 
   const handleSubmit = (value: string) => {
+    setPage(1);
     setQuery(value);
   };
 
