@@ -27,7 +27,7 @@ function App() {
   const [page, setPage] = useState<number>(1);
 
   const { data, isLoading, isError, isSuccess } = useQuery({
-    queryKey: ['articles', query, page],
+    queryKey: ['movies', query, page],
     queryFn: () => fetchMovies(query, page),
     enabled: query !== '',
     placeholderData: keepPreviousData,
